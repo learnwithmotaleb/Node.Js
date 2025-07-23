@@ -1,0 +1,16 @@
+{
+  "name": "motaleb",
+  "version": "1.0.0",
+  "description": "this for testing",
+  "license": "ISC",
+  "author": "abdul motaleb",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "movie-name": "^1.0.0",
+    "random-fruits-name": "^1.10.1"
+  }
+}

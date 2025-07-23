@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flutter Dashboard Manager</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+    }
+
+    /* Login screen with background */
+    #loginScreen {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: rgba(7, 131, 233, 0.7); /* 0.3 = 30% opacity overlay */
+      position: relative;
+      height: 100vh;
+      overflow: auto;
+
+    }
+
+    /* Overlay for opacity */
+    #loginScreen::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    .center-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      flex-direction: column;
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #0069d9;
+      box-shadow: 0 0 5px rgba(0, 105, 217, 0.5);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #0069d9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #004a9c;
+    }
+
+    .card {
+      background: #e8f0fe;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      word-wrap: break-word;
+    }
+
+    .card img {
+      max-width: 100%;
+      border-radius: 6px;
+      display: block;
+      margin: 10px 0;
+      object-fit: contain;
+    }
+
+    .preview {
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 6px;
+      object-fit: contain;
+    }
+
+    .app-header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    .app-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      object-fit: cover;
+      border: 2px solid white;
+      background-color: white;
+    }
+
+    a {
+      color: #004a9c;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Dashboard container override */
+    #dashboardContainer {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 650px) {
+      .container, #dashboardContainer {
+        max-width: 90vw;
+        padding: 20px;
+      }
+
+      input, textarea, button {
+        font-size: 1rem;
+      }
+
+      .app-logo {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 10px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      input, textarea, button {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="loginScreen">
+    <div class="center-screen">
+      <div class="app-header">
+        <img src="Lesson5/assets/logo.png" class="app-logo" alt="App Logo" />
+        <h1>Flutter Forge App<br />Next Gen App Development</h1>
+      </div>
+
+      <div class="container" id="loginContainer">
+        <h2>Login</h2>
+        <input type="text" id="email" placeholder="Email (admin)" autocomplete="username" />
+        <input type="password" id="password" placeholder="Password (1234)" autocomplete="current-password" />
+        <button onclick="login()">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="container" id="dashboardContainer" style="display: none;">
+    <h2>Submit Dashboard Content</h2>
+
+    <label for="logoFile">Select Logo:</label>
+    <input type="file" id="logoFile" accept="image/*" />
+    <img id="previewLogo" class="preview" alt="Logo Preview" style="display: none;" />
+
+    <input type="text" id="name" placeholder="Name" />
+
+    <label for="imageFile">Select Main Image:</label>
+    <input type="file" id="imageFile" accept="image/*" />
+    <img id="previewImage" class="preview" alt="Image Preview" style="display: none;" />
+
+    <input type="text" id="title" placeholder="Title" />
+    <textarea id="description" placeholder="Description" rows="4"></textarea>
+    <input type="text" id="link" placeholder="Link URL" />
+    <button onclick="submitData()">Submit</button>
+
+    <h2 style="margin-top: 40px;">Dashboard Data</h2>
+    <div id="dashboardList"></div>
+  </div>
+
+  <script>
+    const backendURL = 'http://localhost:5000'; // Update if deployed elsewhere
+
+    const logoFileInput = document.getElementById('logoFile');
+    const previewLogo = document.getElementById('previewLogo');
+    logoFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = evt => {
+          previewLogo.src = evt.target.result;
+          previewLogo.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewLogo.style.display = 'none';
+      }
+    });
+
+    const imageFileInput = document.getElementById('imageFile');
+    const previewImage = document.getElementById('previewImage');
+    imageFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = evt => {
+          previewImage.src = evt.target.result;
+          previewImage.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewImage.style.display = 'none';
+      }
+    });
+
+    function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (email === "admin" && password === "1234") {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("dashboardContainer").style.display = "block";
+        fetchDashboard();
+      } else {
+        alert("Invalid credentials");
+      }
+    }
+
+    async function submitData() {
+      const logoFile = logoFileInput.files[0];
+      const imageFile = imageFileInput.files[0];
+
+      if (!logoFile || !imageFile) {
+        alert("Please select both logo and main image.");
+        return;
+      }
+
+      const logoReader = new FileReader();
+      const imageReader = new FileReader();
+
+      logoReader.onloadend = function () {
+        const logoBase64 = logoReader.result;
+
+        imageReader.onloadend = async function () {
+          const imageBase64 = imageReader.result;
+
+          const now = new Date();
+          const time = now.toLocaleString();
+
+          const data = {
+            logo: logoBase64,
+            name: document.getElementById("name").value.trim(),
+            time,
+            image: imageBase64,
+            title: document.getElementById("title").value.trim(),
+            description: document.getElementById("description").value.trim(),
+            link: document.getElementById("link").value.trim(),
+          };
+
+          try {
+            const response = await fetch(`${backendURL}/dashboard`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+              alert("Dashboard data inserted");
+              fetchDashboard();
+              clearForm();
+            } else {
+              alert("Failed to insert data");
+            }
+          } catch (error) {
+            alert("Error submitting data: " + error.message);
+          }
+        };
+        imageReader.readAsDataURL(imageFile);
+      };
+      logoReader.readAsDataURL(logoFile);
+    }
+
+    function clearForm() {
+      document.getElementById("name").value = '';
+      document.getElementById("title").value = '';
+      document.getElementById("description").value = '';
+      document.getElementById("link").value = '';
+      logoFileInput.value = '';
+      imageFileInput.value = '';
+      previewLogo.style.display = 'none';
+      previewImage.style.display = 'none';
+    }
+
+    async function fetchDashboard() {
+      try {
+        const res = await fetch(`${backendURL}/dashboard`);
+        if (!res.ok) throw new Error("Failed to fetch data");
+        const dashboard = await res.json();
+
+        const list = document.getElementById("dashboardList");
+        list.innerHTML = '';
+
+        dashboard.forEach(item => {
+          list.innerHTML += `
+            <div class="card">
+              <img src="${item.logo}" alt="Logo" style="height: 50px; width: 50px; object-fit: cover;" />
+              <h3>${item.title}</h3>
+              <p><strong>${item.name}</strong> • ${item.time}</p>
+              <img src="${item.image}" alt="Main Image" />
+              <p>${item.description}</p>
+              <a href="${item.link}" target="_blank" rel="noopener noreferrer">Read More</a>
+            </div>
+          `;
+        });
+      } catch (error) {
+        console.error(error);
+        alert("Error fetching dashboard data.");
+      }
+    }
+  </script>
+</body>
+</html>
